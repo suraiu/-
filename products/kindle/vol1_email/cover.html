@@ -2,97 +2,177 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>Vol1 Cover</title>
+<title>第1巻 表紙</title>
 <style>
-  :root{
-    --bg:#0F172A; --fg:#F8FAFC; --accent:#FACC15; --sub:#38BDF8;
-    --slime:#38BDF8; --slime-dark:#0EA5E9;
+  /* ブランドカラー（brand/guidelines.md） */
+  :root {
+    --bg: #0F172A;
+    --text: #F8FAFC;
+    --accent: #FACC15;
+    --sub: #38BDF8;
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:1600px;height:2560px;overflow:hidden;background:var(--bg)}
-  body{font-family:"IPAPGothic","IPAGothic","WenQuanYi Zen Hei",sans-serif;color:var(--fg);position:relative}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 2560px; overflow: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IPAPGothic", "IPAGothic", "WenQuanYi Zen Hei", sans-serif;
+    position: relative;
+  }
+  /* 背景の小さな水玉 */
+  .dots {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(56,189,248,0.10) 6px, transparent 7px);
+    background-size: 120px 120px;
+  }
 
-  /* 背景の水玉 */
-  .dot{position:absolute;border-radius:50%;background:var(--sub);opacity:.10}
+  /* ===== 上部：シリーズ名（全巻共通の位置・大きさ） ===== */
+  .series {
+    position: absolute; top: 150px; left: 0; right: 0;
+    text-align: center;
+  }
+  .series .line1 { font-size: 66px; letter-spacing: 6px; color: var(--sub); font-weight: bold; }
+  .series .line2 { margin-top: 26px; font-size: 92px; letter-spacing: 4px; font-weight: bold; }
+  .series .rule {
+    margin: 56px auto 0; width: 1180px; height: 8px; border-radius: 4px;
+    background: var(--sub);
+  }
 
-  .series{position:absolute;top:150px;left:0;right:0;text-align:center;font-size:64px;letter-spacing:6px;color:var(--sub);font-weight:bold}
-  .series::before,.series::after{content:"";display:inline-block;width:120px;height:6px;background:var(--sub);vertical-align:middle;margin:0 36px;border-radius:3px}
+  /* ===== 中央：巻タイトル ===== */
+  .vol {
+    position: absolute; top: 640px; left: 0; right: 0; text-align: center;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 64px; font-weight: bold; letter-spacing: 6px;
+    color: var(--bg); background: var(--accent);
+    padding: 18px 64px; border-radius: 60px;
+  }
+  .title {
+    margin-top: 70px;
+    font-size: 230px; line-height: 1.2; font-weight: bold; letter-spacing: 6px;
+  }
+  .title .accent { color: var(--accent); }
+  .tagline {
+    margin-top: 64px; font-size: 64px; letter-spacing: 3px; color: var(--sub); font-weight: bold;
+  }
+  .tagline b { color: var(--accent); font-size: 84px; }
 
-  .title{position:absolute;top:290px;left:0;right:0;text-align:center;font-weight:bold;line-height:1.12}
-  .title .l1{font-size:150px;letter-spacing:4px}
-  .title .l2{font-size:205px;letter-spacing:2px;margin-top:20px}
-  .title .l2 .y{color:var(--accent)}
-  .title .no{display:inline-block;width:190px;height:190px;border-radius:50%;background:var(--accent);color:var(--bg);font-size:140px;line-height:190px;vertical-align:18px;margin-left:16px}
+  /* ===== 下部：スライム（CSS図形） ===== */
+  .stage { position: absolute; left: 0; right: 0; bottom: 200px; height: 600px; }
+  .slime {
+    position: absolute; left: 50%; bottom: 60px; transform: translateX(-50%) scale(0.76);
+    transform-origin: bottom center;
+    width: 760px; height: 600px;
+  }
+  .slime .body {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 34% 30%, #7DD3FC 0%, #38BDF8 42%, #0EA5E9 100%);
+    border-radius: 50% 50% 46% 46% / 64% 64% 36% 36%;
+    box-shadow: inset -40px -50px 0 rgba(2,132,199,0.45);
+  }
+  .slime .tip { /* しずくの先っぽ */
+    position: absolute; left: 50%; top: -86px; width: 170px; height: 170px;
+    transform: translateX(-50%) rotate(45deg);
+    background: #5CC8F5; border-radius: 0 50% 50% 50%;
+  }
+  .slime .shine {
+    position: absolute; left: 150px; top: 120px; width: 120px; height: 70px;
+    background: rgba(255,255,255,0.75); border-radius: 50%;
+    transform: rotate(-28deg);
+  }
+  .slime .eye {
+    position: absolute; top: 260px; width: 74px; height: 104px;
+    background: var(--bg); border-radius: 50%;
+  }
+  .slime .eye::after {
+    content: ""; position: absolute; top: 18px; left: 16px;
+    width: 26px; height: 26px; background: #fff; border-radius: 50%;
+  }
+  .slime .eye.l { left: 230px; }
+  .slime .eye.r { right: 230px; }
+  .slime .mouth {
+    position: absolute; left: 50%; top: 390px; transform: translateX(-50%);
+    width: 120px; height: 60px;
+    border-bottom: 14px solid var(--bg); border-radius: 0 0 70px 70px;
+  }
+  .slime .cheek {
+    position: absolute; top: 380px; width: 80px; height: 40px;
+    background: rgba(250,204,21,0.55); border-radius: 50%;
+  }
+  .slime .cheek.l { left: 130px; }
+  .slime .cheek.r { right: 130px; }
+  .shadow {
+    position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%);
+    width: 640px; height: 64px; background: rgba(0,0,0,0.35); border-radius: 50%;
+  }
+  /* スライムが持つ「メール」の封筒 */
+  .env {
+    position: absolute; right: 150px; bottom: 130px;
+    width: 300px; height: 210px; background: var(--text);
+    border-radius: 18px; transform: rotate(-10deg);
+    box-shadow: 0 16px 0 rgba(0,0,0,0.25); overflow: hidden;
+  }
+  .env .flap { /* ふたのV字 */
+    position: absolute; left: 50%; top: -150px; width: 230px; height: 230px;
+    transform: translateX(-50%) rotate(45deg);
+    border-right: 12px solid var(--sub); border-bottom: 12px solid var(--sub);
+    border-radius: 0 0 16px 0;
+  }
+  .env .seal {
+    position: absolute; left: 50%; top: 52px; transform: translateX(-50%);
+    width: 54px; height: 54px; border-radius: 50%; background: var(--accent);
+  }
+  /* 吹き出し */
+  .bubble {
+    position: absolute; left: 90px; bottom: 360px;
+    background: var(--text); color: var(--bg);
+    font-size: 48px; font-weight: bold; padding: 30px 48px; border-radius: 50px;
+  }
+  .bubble::after {
+    content: ""; position: absolute; right: 60px; bottom: -40px;
+    border: 26px solid transparent; border-top: 30px solid var(--text);
+  }
 
-  .band{position:absolute;top:880px;left:120px;right:120px;height:230px;background:var(--fg);border-radius:115px;
-        display:flex;align-items:center;justify-content:center;gap:50px}
-  .band span{font-size:150px;font-weight:bold;color:var(--bg);letter-spacing:8px}
-
-  /* 封筒 */
-  .env{position:relative;width:170px;height:118px;background:var(--accent);border-radius:12px;overflow:hidden;flex:none}
-  .env::before{content:"";position:absolute;left:-10px;right:-10px;top:-86px;height:150px;border:10px solid var(--bg);transform:rotate(45deg) scale(.82);transform-origin:center;border-radius:6px;
-               width:150px;margin:0 auto;left:0;right:0}
-
-  /* スライム */
-  .slime-wrap{position:absolute;left:50%;top:1250px;transform:translateX(-50%);width:820px;height:760px}
-  .shadow{position:absolute;bottom:20px;left:110px;width:600px;height:70px;border-radius:50%;background:#000;opacity:.35}
-  .slime{position:absolute;bottom:50px;left:70px;width:680px;height:600px;background:radial-gradient(circle at 35% 30%,#7DD3FC 0%,var(--slime) 45%,var(--slime-dark) 100%);
-         border-radius:50% 50% 44% 44% / 62% 62% 38% 38%}
-  .tip{position:absolute;top:-70px;left:290px;width:120px;height:150px;background:#5CC8F8;border-radius:60% 60% 50% 50% / 80% 80% 40% 40%;transform:rotate(18deg)}
-  .shine{position:absolute;top:110px;left:120px;width:110px;height:70px;border-radius:50%;background:#fff;opacity:.55;transform:rotate(-30deg)}
-  .eye{position:absolute;top:250px;width:70px;height:100px;background:var(--bg);border-radius:50%}
-  .eye::after{content:"";position:absolute;top:16px;left:14px;width:26px;height:30px;border-radius:50%;background:#fff}
-  .eye.l{left:220px}.eye.r{left:390px}
-  .cheek{position:absolute;top:360px;width:80px;height:40px;border-radius:50%;background:#F9A8D4;opacity:.7}
-  .cheek.l{left:140px}.cheek.r{left:460px}
-  .mouth{position:absolute;top:360px;left:300px;width:80px;height:46px;border:10px solid var(--bg);border-top:none;border-radius:0 0 50px 50px}
-  /* スライムが持つ手紙 */
-  .letter{position:absolute;bottom:90px;right:-10px;width:230px;height:160px;background:var(--fg);border-radius:14px;transform:rotate(-12deg);box-shadow:0 10px 0 rgba(0,0,0,.25)}
-  .letter::before{content:"";position:absolute;left:30px;right:30px;top:0;height:95px;border-left:8px solid var(--sub);border-bottom:8px solid var(--sub);transform:scaleY(-1);
-                  background:linear-gradient(to bottom right,transparent 49%,var(--sub) 49%,var(--sub) 53%,transparent 53%) left/50% 100% no-repeat,
-                             linear-gradient(to bottom left,transparent 49%,var(--sub) 49%,var(--sub) 53%,transparent 53%) right/50% 100% no-repeat;border:none}
-  .bubble{position:absolute;top:30px;right:-40px;background:var(--accent);color:var(--bg);font-size:58px;font-weight:bold;padding:24px 40px;border-radius:50px;transform:rotate(6deg)}
-  .bubble::after{content:"";position:absolute;bottom:-34px;left:60px;border:20px solid transparent;border-top:28px solid var(--accent);border-left:6px solid transparent}
-
-  .points{position:absolute;top:2060px;left:0;right:0;display:flex;justify-content:center;gap:40px}
-  .pt{border:6px solid var(--sub);border-radius:28px;padding:26px 40px;font-size:64px;font-weight:bold;text-align:center;line-height:1.25}
-  .pt b{display:block;color:var(--accent);font-size:110px}
-
-  .author{position:absolute;bottom:90px;left:0;right:0;text-align:center;font-size:72px;font-weight:bold;letter-spacing:12px;color:var(--fg)}
+  /* 最下部：著者名 */
+  .author {
+    position: absolute; bottom: 110px; left: 0; right: 0; text-align: center;
+    font-size: 64px; letter-spacing: 12px; font-weight: bold;
+  }
 </style>
 </head>
 <body>
-  <div class="dot" style="width:420px;height:420px;left:-140px;top:640px"></div>
-  <div class="dot" style="width:300px;height:300px;right:-90px;top:1300px"></div>
-  <div class="dot" style="width:180px;height:180px;left:120px;top:1900px"></div>
-  <div class="dot" style="width:120px;height:120px;right:180px;top:60px"></div>
+  <div class="dots"></div>
 
-  <div class="series">スライムと覚える</div>
-
-  <div class="title">
-    <div class="l1">AIへの頼み方</div>
-    <div class="l2"><span class="y">テンプレ集</span><span class="no">1</span></div>
+  <div class="series">
+    <div class="line1">スライムと覚える</div>
+    <div class="line2">AIへの頼み方テンプレ集</div>
+    <div class="rule"></div>
   </div>
 
-  <div class="band"><div class="env"></div><span>仕事のメール編</span></div>
+  <div class="vol">
+    <div class="badge">第1巻</div>
+    <div class="title">仕事の<br><span class="accent">メール</span>編</div>
+    <div class="tagline">コピペで使える頼み方 <b>56</b> こ</div>
+  </div>
 
-  <div class="slime-wrap">
+  <div class="stage">
+    <div class="bubble">コピペでOK！</div>
     <div class="shadow"></div>
     <div class="slime">
       <div class="tip"></div>
+      <div class="body"></div>
       <div class="shine"></div>
-      <div class="eye l"></div><div class="eye r"></div>
-      <div class="cheek l"></div><div class="cheek r"></div>
+      <div class="eye l"></div>
+      <div class="eye r"></div>
+      <div class="cheek l"></div>
+      <div class="cheek r"></div>
       <div class="mouth"></div>
-      <div class="letter"></div>
     </div>
-    <div class="bubble">コピペでOK！</div>
-  </div>
-
-  <div class="points">
-    <div class="pt"><b>56</b>テンプレ</div>
-    <div class="pt"><b>出力例</b>ぜんぶ付き</div>
-    <div class="pt"><b>直し方</b>もわかる</div>
+    <div class="env">
+      <div class="flap"></div>
+      <div class="seal"></div>
+    </div>
   </div>
 
   <div class="author">スライム国</div>
