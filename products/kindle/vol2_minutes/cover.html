@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>第2巻 表紙</title>
+<style>
+  /* ブランドカラー（brand/guidelines.md） */
+  :root {
+    --bg: #0F172A;
+    --text: #F8FAFC;
+    --accent: #FACC15;
+    --sub: #38BDF8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 2560px; overflow: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IPAPGothic", "IPAGothic", "WenQuanYi Zen Hei", sans-serif;
+    position: relative;
+  }
+  /* 背景の小さな水玉 */
+  .dots {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(56,189,248,0.10) 6px, transparent 7px);
+    background-size: 120px 120px;
+  }
+
+  /* ===== 上部：シリーズ名（全巻共通の位置・大きさ） ===== */
+  .series { position: absolute; top: 150px; left: 0; right: 0; text-align: center; }
+  .series .line1 { font-size: 66px; letter-spacing: 6px; color: var(--sub); font-weight: bold; }
+  .series .line2 { margin-top: 26px; font-size: 92px; letter-spacing: 4px; font-weight: bold; }
+  .series .rule { margin: 56px auto 0; width: 1180px; height: 8px; border-radius: 4px; background: var(--sub); }
+
+  /* ===== 中央：巻タイトル ===== */
+  .vol { position: absolute; top: 640px; left: 0; right: 0; text-align: center; }
+  .badge {
+    display: inline-block;
+    font-size: 64px; font-weight: bold; letter-spacing: 6px;
+    color: var(--bg); background: var(--accent);
+    padding: 18px 64px; border-radius: 60px;
+  }
+  .title {
+    margin-top: 70px;
+    font-size: 230px; line-height: 1.2; font-weight: bold; letter-spacing: 6px;
+  }
+  .title .accent { color: var(--accent); }
+  .tagline { margin-top: 64px; font-size: 64px; letter-spacing: 3px; color: var(--sub); font-weight: bold; }
+  .tagline b { color: var(--accent); font-size: 84px; }
+
+  /* ===== 下部：スライム（CSS図形） ===== */
+  .stage { position: absolute; left: 0; right: 0; bottom: 200px; height: 600px; }
+  .slime {
+    position: absolute; left: 50%; bottom: 60px; transform: translateX(-50%) scale(0.76);
+    transform-origin: bottom center;
+    width: 760px; height: 600px;
+  }
+  .slime .body {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 34% 30%, #7DD3FC 0%, #38BDF8 42%, #0EA5E9 100%);
+    border-radius: 50% 50% 46% 46% / 64% 64% 36% 36%;
+    box-shadow: inset -40px -50px 0 rgba(2,132,199,0.45);
+  }
+  .slime .tip {
+    position: absolute; left: 50%; top: -86px; width: 170px; height: 170px;
+    transform: translateX(-50%) rotate(45deg);
+    background: #5CC8F5; border-radius: 0 50% 50% 50%;
+  }
+  .slime .shine {
+    position: absolute; left: 150px; top: 120px; width: 120px; height: 70px;
+    background: rgba(255,255,255,0.75); border-radius: 50%; transform: rotate(-28deg);
+  }
+  .slime .eye { position: absolute; top: 260px; width: 74px; height: 104px; background: var(--bg); border-radius: 50%; }
+  .slime .eye::after {
+    content: ""; position: absolute; top: 18px; left: 16px;
+    width: 26px; height: 26px; background: #fff; border-radius: 50%;
+  }
+  .slime .eye.l { left: 230px; }
+  .slime .eye.r { right: 230px; }
+  .slime .mouth {
+    position: absolute; left: 50%; top: 390px; transform: translateX(-50%);
+    width: 120px; height: 60px;
+    border-bottom: 14px solid var(--bg); border-radius: 0 0 70px 70px;
+  }
+  .slime .cheek { position: absolute; top: 380px; width: 80px; height: 40px; background: rgba(250,204,21,0.55); border-radius: 50%; }
+  .slime .cheek.l { left: 130px; }
+  .slime .cheek.r { right: 130px; }
+  .shadow {
+    position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%);
+    width: 640px; height: 64px; background: rgba(0,0,0,0.35); border-radius: 50%;
+  }
+
+  /* スライムが持つ「議事録」のクリップボード */
+  .board {
+    position: absolute; right: 160px; bottom: 110px;
+    width: 250px; height: 320px; background: var(--text);
+    border-radius: 18px; transform: rotate(9deg);
+    box-shadow: 0 16px 0 rgba(0,0,0,0.25);
+    border: 12px solid #94A3B8;
+  }
+  .board .clip {
+    position: absolute; top: -34px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 44px; background: var(--accent); border-radius: 12px;
+  }
+  .board .row { display: flex; align-items: center; margin: 34px 22px 0; gap: 16px; }
+  .board .row:first-of-type { margin-top: 46px; }
+  .board .chk { width: 30px; height: 30px; border: 6px solid var(--sub); border-radius: 7px; flex: none; position: relative; }
+  .board .chk.on::after {
+    content: ""; position: absolute; left: 4px; top: -6px; width: 12px; height: 22px;
+    border-right: 7px solid var(--accent); border-bottom: 7px solid var(--accent);
+    transform: rotate(40deg);
+  }
+  .board .ln { height: 16px; border-radius: 9px; background: #CBD5E1; flex: 1; }
+  .board .ln.s { flex: 0 0 80px; }
+
+  /* 吹き出し */
+  .bubble {
+    position: absolute; left: 90px; bottom: 360px;
+    background: var(--text); color: var(--bg);
+    font-size: 48px; font-weight: bold; padding: 30px 48px; border-radius: 50px;
+  }
+  .bubble::after {
+    content: ""; position: absolute; right: 60px; bottom: -40px;
+    border: 26px solid transparent; border-top: 30px solid var(--text);
+  }
+
+  /* 最下部：著者名 */
+  .author {
+    position: absolute; bottom: 110px; left: 0; right: 0; text-align: center;
+    font-size: 64px; letter-spacing: 12px; font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <div class="dots"></div>
+
+  <div class="series">
+    <div class="line1">スライムと覚える</div>
+    <div class="line2">AIへの頼み方テンプレ集</div>
+    <div class="rule"></div>
+  </div>
+
+  <div class="vol">
+    <div class="badge">第2巻</div>
+    <div class="title">議事録・<br><span class="accent">要約</span>編</div>
+    <div class="tagline">コピペで使える頼み方 <b>55</b> こ</div>
+  </div>
+
+  <div class="stage">
+    <div class="bubble">メモがスッキリ！</div>
+    <div class="shadow"></div>
+    <div class="slime">
+      <div class="tip"></div>
+      <div class="body"></div>
+      <div class="shine"></div>
+      <div class="eye l"></div>
+      <div class="eye r"></div>
+      <div class="cheek l"></div>
+      <div class="cheek r"></div>
+      <div class="mouth"></div>
+    </div>
+    <div class="board">
+      <div class="clip"></div>
+      <div class="row"><div class="chk on"></div><div class="ln"></div></div>
+      <div class="row"><div class="chk on"></div><div class="ln"></div></div>
+      <div class="row"><div class="chk"></div><div class="ln"></div></div>
+      <div class="row"><div class="chk"></div><div class="ln s"></div></div>
+    </div>
+  </div>
+
+  <div class="author">スライム国</div>
+</body>
+</html>
