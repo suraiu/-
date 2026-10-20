@@ -37,7 +37,8 @@ SNS_ENV = {"threads": ["THREADS_ACCESS_TOKEN", "THREADS_USER_ID"],
 
 # ---- 設定 ---------------------------------------------------------------
 
-def read_config(path=CONFIG):
+def read_config(path=None):
+    path = path or CONFIG
     try:
         with open(path, encoding="utf-8") as f:
             text = f.read()

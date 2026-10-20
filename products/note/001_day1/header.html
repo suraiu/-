@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- note見出し画像（1280×670）。書き出し: scripts/render.sh で 1280×757 に描画し、上から670pxを切り出す（ヘッドレスChromeは窓の高さより描画域が約87px狭いため）。 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>note見出し画像 001</title>
+<style>
+  :root{--bg:#0F172A;--fg:#F8FAFC;--accent:#FACC15;--sub:#38BDF8;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:670px;overflow:hidden;background:var(--bg);
+    font-family:"IPAPGothic","IPAGothic","WenQuanYi Zen Hei",sans-serif;color:var(--fg)}
+  .wrap{position:relative;width:1280px;height:670px;padding:64px 90px}
+  .grid{position:absolute;inset:0;background-image:radial-gradient(rgba(56,189,248,.13) 2px,transparent 2px);
+    background-size:36px 36px}
+  .tag{position:relative;display:inline-block;font-size:28px;font-weight:bold;color:var(--bg);
+    background:var(--sub);padding:8px 20px;border-radius:10px}
+  .tag2{margin-left:12px;color:var(--fg);background:none;border:2px solid var(--fg)}
+  h1{position:relative;margin-top:34px;font-size:58px;line-height:1.35;font-weight:bold;width:840px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .meta{position:relative;margin-top:30px;font-size:30px;line-height:1.5;color:#CBD5E1}
+  .sales{position:absolute;left:90px;bottom:60px;display:flex;align-items:baseline;gap:18px}
+  .sales .k{font-size:32px;font-weight:bold;color:var(--fg)}
+  .sales .v{font-size:88px;font-weight:bold;color:var(--accent);line-height:1}
+  .note{position:absolute;right:40px;bottom:22px;font-size:20px;color:#94A3B8}
+  /* ぷるの：丸い大福型スライム */
+  .slime{position:absolute;right:110px;top:200px;width:300px;height:250px}
+  .body{position:absolute;left:0;bottom:0;width:300px;height:230px;background:var(--sub);
+    border-radius:150px 150px 120px 120px / 140px 140px 90px 90px;box-shadow:inset -18px -14px 0 rgba(15,23,42,.18)}
+  .hl{position:absolute;left:52px;top:46px;width:52px;height:28px;background:var(--fg);opacity:.85;border-radius:50%;transform:rotate(-25deg)}
+  .glass{position:absolute;top:96px;width:76px;height:76px;border:9px solid var(--accent);border-radius:50%}
+  .g1{left:62px}.g2{left:164px}
+  .bridge{position:absolute;left:131px;top:126px;width:40px;height:9px;background:var(--accent)}
+  .eye{position:absolute;top:122px;width:16px;height:22px;background:var(--bg);border-radius:50%}
+  .e1{left:92px}.e2{left:194px}
+  .cheek{position:absolute;top:178px;width:34px;height:16px;background:#F9A8D4;border-radius:50%;opacity:.8}
+  .c1{left:46px}.c2{left:222px}
+  .zz{position:absolute;right:-30px;top:-10px;font-size:54px;font-weight:bold;color:var(--fg)}
+  .zz span{font-size:38px;margin-left:4px;opacity:.7}
+  .book{position:absolute;left:-36px;bottom:6px;width:70px;height:56px;background:var(--accent);border-radius:6px;transform:rotate(-12deg)}
+  .book:after{content:"";position:absolute;left:33px;top:4px;width:4px;height:48px;background:var(--bg);opacity:.5}
+  .stop{position:absolute;right:96px;top:470px;font-size:30px;font-weight:bold;color:var(--bg);background:var(--accent);
+    padding:8px 18px;border-radius:999px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="grid"></div>
+  <span class="tag">AIが書いた実録 #1</span><span class="tag tag2">スライム国</span>
+  <h1>AI社員<em>10人</em>で会社を作ったら、<br>初日に<em>全員止まった</em>話</h1>
+  <p class="meta">目標 10万円 → 5万円 → 3,000円</p>
+  <div class="sales"><span class="k">現在の売上</span><span class="v">0円</span></div>
+
+  <div class="slime">
+    <div class="body">
+      <div class="hl"></div>
+      <div class="glass g1"></div><div class="glass g2"></div><div class="bridge"></div>
+      <div class="eye e1"></div><div class="eye e2"></div>
+      <div class="cheek c1"></div><div class="cheek c2"></div>
+    </div>
+    <div class="book"></div>
+    <div class="zz">Z<span>z</span></div>
+  </div>
+  <div class="stop">利用上限で中断中…</div>
+  <div class="note">イラスト：AIがコードで作成</div>
+</div>
+</body>
+</html>
