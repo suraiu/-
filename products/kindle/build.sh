@@ -8,7 +8,7 @@ for d in vol1_email vol2_minutes vol3_notices; do
   tmp="$(mktemp --suffix=.md)"; python3 _style/add_chara.py "$d/manuscript.md" > "$tmp"
   pandoc -f markdown+hard_line_breaks+lists_without_preceding_blankline-implicit_figures "$tmp" -o "$d/manuscript.epub" --toc --toc-depth=2 \
     --css _style/kindle.css --epub-cover-image "$d/cover.png" \
-    --metadata title="$title" --metadata author="スライム国" --metadata lang=ja
+    --metadata title="$title" --metadata author="スライム王国" --metadata lang=ja
   pandoc -f markdown+hard_line_breaks+lists_without_preceding_blankline-implicit_figures "$tmp" -o "$d/manuscript.docx" --toc --toc-depth=2 \
     --reference-doc _style/reference.docx --metadata title="$title"
   rm -f "$tmp"

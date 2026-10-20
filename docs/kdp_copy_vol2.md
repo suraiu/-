@@ -71,17 +71,17 @@ Suraimu to Oboeru AI e no Tanomikata Tenpureshu
 
 ### 著者
 ```
-スライム国
+スライム王国
 ```
 
 著者にもフリガナ・ローマ字の欄があれば：
 
 ```
-スライムコク
+スライムオウコク
 ```
 
 ```
-Suraimu Koku
+Suraimu Okoku
 ```
 
 ### 内容紹介
@@ -174,5 +174,5 @@ https://github.com/suraiu/-/raw/main/products/kindle/vol2_minutes/cover.png
 
 ### 出版社（ISBN／出版社の欄。ISBNは空欄のまま）
 ```
-スライム国
+スライム王国
 ```
