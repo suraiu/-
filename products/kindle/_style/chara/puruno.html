@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<!-- ミニキャラ「ぷるの」。?pose=normal|idea|ok|caution|cheer で表情と小物を切り替える。400×400で書き出す -->
+<style>
+  html, body { margin: 0; background: transparent; }
+  .wrap { position: relative; width: 400px; height: 400px; }
+  .slime { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%) scale(.38); transform-origin: bottom center; width: 760px; height: 600px; }
+  .body { position: absolute; inset: 0; background: radial-gradient(circle at 34% 30%, #7DD3FC 0%, #38BDF8 42%, #0EA5E9 100%);
+    border-radius: 50% 50% 46% 46% / 64% 64% 36% 36%; box-shadow: inset -40px -50px 0 rgba(2,132,199,.45); }
+  .tip { position: absolute; left: 50%; top: -86px; width: 170px; height: 170px; transform: translateX(-50%) rotate(45deg); background: #5CC8F5; border-radius: 0 50% 50% 50%; }
+  .shine { position: absolute; left: 150px; top: 120px; width: 120px; height: 70px; background: rgba(255,255,255,.75); border-radius: 50%; transform: rotate(-28deg); }
+  .eye { position: absolute; top: 260px; width: 74px; height: 104px; background: #0F172A; border-radius: 50%; }
+  .eye::after { content: ""; position: absolute; top: 18px; left: 16px; width: 26px; height: 26px; background: #fff; border-radius: 50%; }
+  .eye.l { left: 230px; } .eye.r { right: 230px; }
+  .eye.happy { height: 50px; background: transparent; border-top: 18px solid #0F172A; border-radius: 50% 50% 0 0; top: 290px; }
+  .eye.happy::after { display: none; }
+  .mouth { position: absolute; left: 50%; top: 390px; transform: translateX(-50%); width: 120px; height: 60px; border-bottom: 14px solid #0F172A; border-radius: 0 0 70px 70px; }
+  .mouth.o { width: 56px; height: 64px; border: 14px solid #0F172A; border-radius: 50%; top: 395px; }
+  .cheek { position: absolute; top: 380px; width: 80px; height: 40px; background: rgba(250,204,21,.55); border-radius: 50%; }
+  .cheek.l { left: 130px; } .cheek.r { right: 130px; }
+  .badge { position: absolute; right: 40px; top: 50px; width: 96px; height: 96px; border-radius: 50%; background: #FACC15;
+    color: #0F172A; font: 900 64px/96px sans-serif; text-align: center; }
+  .drop { position: absolute; right: 96px; top: 130px; width: 38px; height: 38px; background: #7DD3FC; border-radius: 0 50% 50% 50%; transform: rotate(45deg); }
+  .spark { position: absolute; color: #FACC15; font: 900 64px/1 sans-serif; }
+  .hidden { display: none; }
+</style></head>
+<body><div class="wrap">
+  <div class="slime">
+    <div class="tip"></div><div class="body"></div><div class="shine"></div>
+    <div class="eye l"></div><div class="eye r"></div>
+    <div class="cheek l"></div><div class="cheek r"></div>
+    <div class="mouth"></div>
+  </div>
+  <div class="badge hidden"></div>
+  <div class="drop hidden"></div>
+  <div class="spark hidden" style="left:44px;top:70px">✦</div>
+  <div class="spark hidden" style="right:50px;top:100px;font-size:48px">✦</div>
+</div>
+<script>
+  const pose = new URLSearchParams(location.search).get('pose') || 'normal';
+  const $ = s => document.querySelectorAll(s);
+  const show = s => $(s).forEach(e => e.classList.remove('hidden'));
+  if (pose === 'idea') { show('.badge'); $('.badge')[0].textContent = '!'; }
+  if (pose === 'ok') { $('.eye').forEach(e => e.classList.add('happy')); show('.badge'); $('.badge')[0].textContent = '✓'; }
+  if (pose === 'caution') { $('.mouth')[0].classList.add('o'); show('.drop'); }
+  if (pose === 'cheer') { $('.eye').forEach(e => e.classList.add('happy')); show('.spark'); }
+</script>
+</body></html>
