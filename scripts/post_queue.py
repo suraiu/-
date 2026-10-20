@@ -10,6 +10,8 @@
   （SNSで確認して、人が queue_state.json のその行を消す）。
 - 同時に2つ動かないように、output/日付/queue.lock でロックする（cron の重なり対策）。
 - --dry-run：送信も記録もせず、投稿される予定の内容を表示する（環境変数も不要）。
+- X は料金対策として、URL を含む投稿はスキップして警告する。1日の本数は data/config.md の
+  X_DAILY_LIMIT（既定 5）まで。
 
 使い方:
   python3 scripts/post_queue.py                      # 今日（JST）のキュー
@@ -31,13 +33,17 @@ sys.path.insert(0, HERE)
 import sns_common as c  # noqa: E402
 import post_threads  # noqa: E402
 import post_bluesky  # noqa: E402
+import post_x  # noqa: E402
 
 ROOT = os.path.dirname(HERE)
 CONFIG = os.path.join(ROOT, "data", "config.md")
 POSTED = os.path.join(ROOT, "data", "posted.md")
-SNS_LABEL = {"threads": "Threads", "bluesky": "Bluesky"}
+SNS_LABEL = {"threads": "Threads", "bluesky": "Bluesky", "x": "X"}
 SNS_ENV = {"threads": ["THREADS_ACCESS_TOKEN", "THREADS_USER_ID"],
-           "bluesky": ["BLUESKY_HANDLE", "BLUESKY_APP_PASSWORD"]}
+           "bluesky": ["BLUESKY_HANDLE", "BLUESKY_APP_PASSWORD"],
+           "x": list(post_x.ENV_NAMES)}
+SNS_MODULE = {"threads": post_threads, "bluesky": post_bluesky, "x": post_x}
+DEFAULT_X_DAILY_LIMIT = 5
 
 
 # ---- 設定 ---------------------------------------------------------------
@@ -56,7 +62,14 @@ def read_config(path=None):
     if val not in ("true", "false"):
         c.fail("AUTO_POST は true か false にしてください（今: {}）".format(val))
     tzm = re.search(r"^TIMEZONE:\s*(\S+)", text, re.M)
-    return {"auto_post": val == "true", "timezone": tzm.group(1) if tzm else "Asia/Tokyo"}
+    xm = re.search(r"^X_DAILY_LIMIT:\s*(\S+)", text, re.M)
+    x_limit = DEFAULT_X_DAILY_LIMIT
+    if xm:
+        if not xm.group(1).isdigit():
+            c.fail("X_DAILY_LIMIT は 0 以上の整数にしてください（今: {}）".format(xm.group(1)))
+        x_limit = int(xm.group(1))
+    return {"auto_post": val == "true", "timezone": tzm.group(1) if tzm else "Asia/Tokyo",
+            "x_daily_limit": x_limit}
 
 
 def get_tz(name):
@@ -104,7 +117,8 @@ def load_queue(path, tz):
             errors.append("{}: id {} が重複しています".format(where, p.get("id")))
         seen.add(p.get("id"))
         if p.get("sns") not in SNS_LABEL:
-            errors.append("{}: sns は threads か bluesky にしてください（今: {}）".format(where, p.get("sns")))
+            errors.append("{}: sns は threads / bluesky / x のどれかにしてください（今: {}）".format(
+                where, p.get("sns")))
             continue
         try:
             p["_dt"] = parse_time(p.get("scheduled_at"), tz)
@@ -112,7 +126,7 @@ def load_queue(path, tz):
             errors.append("{}: {}".format(where, e))
         if p.get("text"):
             try:
-                (post_threads if p["sns"] == "threads" else post_bluesky).check_text(p["text"])
+                SNS_MODULE[p["sns"]].check_text(p["text"])  # X の URL はここでは止めず、投稿時にスキップ
             except ValueError as e:
                 errors.append("{} ({}): {}".format(where, p.get("id"), e))
     for p in posts:
@@ -137,6 +151,15 @@ def load_state(path):
             return json.load(f)
     except FileNotFoundError:
         return {"posted": {}}
+
+
+def x_url_count(p):
+    return len(post_x.find_urls(p["text"])) if p["sns"] == "x" else 0
+
+
+def x_used_today(done):
+    """この日のキューで、X に出した（出したかもしれない）本数。sending / unknown も数える。"""
+    return sum(1 for r in done.values() if r and r.get("sns") == "x")
 
 
 def is_posted(rec):
@@ -221,6 +244,7 @@ def run(args, cfg, tz, now, date_str, qpath, spath, posts):
 
     max_delay = datetime.timedelta(hours=args.max_delay_hours)
     due, notes = [], []
+    x_left = max(0, cfg["x_daily_limit"] - x_used_today(done))
     for p in sorted(posts, key=lambda x: x["_dt"]):
         pid = p["id"]
         if pid in done:
@@ -239,6 +263,17 @@ def run(args, cfg, tz, now, date_str, qpath, spath, posts):
             notes.append("  - {}: 予定より {} 時間以上遅れたので出しません（手で判断してください）".format(
                 pid, args.max_delay_hours))
             continue
+        if p["sns"] == "x":
+            if x_url_count(p):
+                print("警告: {}: X の投稿に URL が入っているのでスキップします（URL つきは料金が高い。"
+                      "URL はプロフィールや返信に置いてください）".format(pid), file=sys.stderr)
+                notes.append("  - {}: URL を含む X 投稿なのでスキップ（料金対策）".format(pid))
+                continue
+            if x_left <= 0:
+                notes.append("  - {}: X の1日の上限 {} 本に達したので出しません（X_DAILY_LIMIT）".format(
+                    pid, cfg["x_daily_limit"]))
+                continue
+            x_left -= 1
         due.append(p)
 
     if notes:
@@ -254,10 +289,10 @@ def run(args, cfg, tz, now, date_str, qpath, spath, posts):
             print("  {} の環境変数: {}".format(SNS_LABEL[sns], "設定あり" if ok else "未設定（本番ではこのSNSは飛ばします）"))
         print("時刻が来た投稿: {}件".format(len(due)))
         for p in due:
-            mod = post_threads if p["sns"] == "threads" else post_bluesky
-            n = mod.check_text(p["text"])[0]
-            print("\n=== {} | {} | {} | {}字 ===".format(p["id"], SNS_LABEL[p["sns"]],
-                                                     p["_dt"].strftime("%Y-%m-%d %H:%M"), n))
+            n = SNS_MODULE[p["sns"]].check_text(p["text"])[0]
+            unit = "（Xの数え方）" if p["sns"] == "x" else "字"
+            print("\n=== {} | {} | {} | {}{} ===".format(p["id"], SNS_LABEL[p["sns"]],
+                                                     p["_dt"].strftime("%Y-%m-%d %H:%M"), n, unit))
             if p.get("reply_to"):
                 print("（{} への返信として投稿）".format(p["reply_to"]))
             print(p["text"])
@@ -284,7 +319,11 @@ def run(args, cfg, tz, now, date_str, qpath, spath, posts):
             reply_info = parent
         try:
             if sns not in creds:
-                creds[sns] = post_threads.load_credentials() if sns == "threads" else post_bluesky.login()
+                creds[sns] = {"threads": post_threads.load_credentials, "bluesky": post_bluesky.login,
+                              "x": post_x.load_credentials}[sns]()
+            if sns == "x" and x_used_today(done) >= cfg["x_daily_limit"]:  # 念のため送る直前にも確認
+                print("  - {}: X の1日の上限 {} 本に達したので出しません".format(pid, cfg["x_daily_limit"]))
+                continue
             # 送る直前に「送信中」を記録。ここで落ちても、次の実行で自動の出し直しはしない
             done[pid] = {"sns": sns, "status": "sending",
                          "started_at": datetime.datetime.now(tz).isoformat(timespec="seconds")}
@@ -293,6 +332,10 @@ def run(args, cfg, tz, now, date_str, qpath, spath, posts):
                 rid = reply_info["post_id"] if reply_info else None
                 post_id = post_threads.post(p["text"], reply_to_id=rid, wait_sec=args.threads_wait,
                                             creds=creds[sns])
+                rec = {"sns": sns, "post_id": post_id}
+            elif sns == "x":
+                rid = reply_info["post_id"] if reply_info else None
+                post_id = post_x.post(p["text"], reply_to_id=rid, creds=creds[sns], allow_url=False)
                 rec = {"sns": sns, "post_id": post_id}
             else:
                 reply = None

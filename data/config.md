@@ -6,3 +6,6 @@ AUTO_POST: false
 
 REEL_DAYS: 月,水,金
 TIMEZONE: Asia/Tokyo
+
+X_DAILY_LIMIT: 5
+# X に1日（その日のキュー）で出す本数の上限。返信も1本と数える。0 なら X には出さない。
