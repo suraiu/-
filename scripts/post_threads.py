@@ -89,13 +89,19 @@ def post(text, *, reply_to_id=None, wait_sec=DEFAULT_WAIT_SEC, creds=None):
     if wait_sec > 0:
         time.sleep(wait_sec)
 
-    _, res = c.http_request(
-        "POST", "{}/{}/threads_publish".format(API_BASE, user_id),
-        form={"creation_id": container_id, "access_token": token},
-    )
+    try:
+        _, res = c.http_request(
+            "POST", "{}/{}/threads_publish".format(API_BASE, user_id),
+            form={"creation_id": container_id, "access_token": token},
+        )
+    except c.PostError as e:
+        e.maybe_posted = e.maybe_sent  # 公開の段階で届いたか不明なら、出し直さない
+        raise
     post_id = res.get("id")
     if not post_id:
-        raise c.PostError(c.redact("公開に失敗しました: {}".format(res)))
+        err = c.PostError(c.redact("公開に失敗しました（投稿IDが返ってこない）: {}".format(res)))
+        err.maybe_posted = True  # 2xx で ID が無い＝公開されたか分からない
+        raise err
     return str(post_id)
 
 

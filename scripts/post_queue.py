@@ -5,6 +5,10 @@
 - qc が "ok"（品質管理を通った）の投稿だけを扱う。
 - 投稿したら data/posted.md に追記し、二重投稿を防ぐため
   output/YYYY-MM-DD/queue_state.json に「投稿済みID」を記録する（秘密の値は書かない）。
+- 送信の直前に queue_state.json へ「送信中」と書き、成功したら「投稿済み」に書きかえる。
+  途中で落ちた・タイムアウトした等で「投稿されたか不明」になったものは、自動では出し直さない
+  （SNSで確認して、人が queue_state.json のその行を消す）。
+- 同時に2つ動かないように、output/日付/queue.lock でロックする（cron の重なり対策）。
 - --dry-run：送信も記録もせず、投稿される予定の内容を表示する（環境変数も不要）。
 
 使い方:
@@ -15,6 +19,7 @@
 """
 
 import argparse
+import contextlib
 import datetime
 import json
 import os
@@ -68,12 +73,14 @@ def get_tz(name):
 
 def parse_time(s, tz):
     try:
+        if isinstance(s, str) and s.endswith("Z"):
+            s = s[:-1] + "+00:00"  # Python 3.10 以前の fromisoformat は "Z" を読めない
         dt = datetime.datetime.fromisoformat(s)
     except (TypeError, ValueError):
         raise ValueError("scheduled_at の形式が不正です: {!r}（例: 2026-11-01T08:00:00+09:00）".format(s))
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=tz)
-    return dt
+    return dt.astimezone(tz)  # 表示も比較もJSTにそろえる
 
 
 def load_queue(path, tz):
@@ -112,6 +119,13 @@ def load_queue(path, tz):
         r = p.get("reply_to")
         if r and r not in seen:
             errors.append("{}: reply_to の {} がキューにありません".format(p.get("id"), r))
+        elif r:
+            parent = next(q for q in posts if q.get("id") == r)
+            if r == p.get("id"):
+                errors.append("{}: reply_to が自分自身です".format(p.get("id")))
+            elif parent.get("sns") != p.get("sns"):
+                errors.append("{}: reply_to の {} は別のSNSの投稿です（返信は同じSNSどうしだけ）".format(
+                    p.get("id"), r))
     if errors:
         c.fail("queue.json に問題があります:\n  " + "\n  ".join(errors))
     return posts
@@ -123,6 +137,31 @@ def load_state(path):
             return json.load(f)
     except FileNotFoundError:
         return {"posted": {}}
+
+
+def is_posted(rec):
+    """queue_state.json の1件が「投稿済み」か（古い形式は status が無い＝投稿済み）。"""
+    return bool(rec) and rec.get("status", "posted") == "posted"
+
+
+@contextlib.contextmanager
+def run_lock(path):
+    """同じ日のキューを2つのプロセスが同時に処理しないようにする（二重投稿の防止）。"""
+    try:
+        import fcntl
+    except ImportError:  # Windows など。ロックなしで動かす
+        yield
+        return
+    with open(path, "w") as f:
+        try:
+            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            c.fail("別の post_queue.py が実行中です（{}）。終わってからもう一度実行してください".format(
+                os.path.basename(path)))
+        try:
+            yield
+        finally:
+            fcntl.flock(f, fcntl.LOCK_UN)
 
 
 def save_state(path, state):
@@ -155,7 +194,7 @@ def main(argv=None):
 
     cfg = read_config()
     tz = get_tz(cfg["timezone"])
-    now = parse_time(args.now, tz) if args.now else datetime.datetime.now(tz)
+    now = (parse_time(args.now, tz) if args.now else datetime.datetime.now(tz)).astimezone(tz)  # JSTで扱う
     date_str = args.date or now.astimezone(tz).strftime("%Y-%m-%d")
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_str):
         c.fail("--date は YYYY-MM-DD で指定してください")
@@ -163,6 +202,13 @@ def main(argv=None):
     spath = os.path.join(os.path.dirname(os.path.abspath(qpath)), "queue_state.json")
 
     posts = load_queue(qpath, tz)
+    if args.dry_run or not cfg["auto_post"]:
+        return run(args, cfg, tz, now, date_str, qpath, spath, posts)
+    with run_lock(os.path.join(os.path.dirname(os.path.abspath(qpath)), "queue.lock")):
+        return run(args, cfg, tz, now, date_str, qpath, spath, posts)
+
+
+def run(args, cfg, tz, now, date_str, qpath, spath, posts):
     state = load_state(spath)
     done = state.setdefault("posted", {})
 
@@ -178,6 +224,10 @@ def main(argv=None):
     for p in sorted(posts, key=lambda x: x["_dt"]):
         pid = p["id"]
         if pid in done:
+            if not is_posted(done[pid]):
+                notes.append("  - {}: 前回、投稿できたか分からないまま終わっています（{}）。SNSで確認し、"
+                             "出ていなければ queue_state.json からこの id を消してください".format(
+                                 pid, done[pid].get("status")))
             continue
         if str(p.get("qc", "")).lower() != "ok":
             notes.append("  - {}: 品質管理が未通過（qc != ok）なので出しません".format(pid))
@@ -228,13 +278,17 @@ def main(argv=None):
         reply_info = None
         if p.get("reply_to"):
             parent = done.get(p["reply_to"])
-            if not parent or parent.get("sns") != sns:
+            if not is_posted(parent) or parent.get("sns") != sns:
                 print("  - {}: 返信先 {} がまだ投稿されていないので待ちます".format(pid, p["reply_to"]))
                 continue
             reply_info = parent
         try:
             if sns not in creds:
                 creds[sns] = post_threads.load_credentials() if sns == "threads" else post_bluesky.login()
+            # 送る直前に「送信中」を記録。ここで落ちても、次の実行で自動の出し直しはしない
+            done[pid] = {"sns": sns, "status": "sending",
+                         "started_at": datetime.datetime.now(tz).isoformat(timespec="seconds")}
+            save_state(spath, state)
             if sns == "threads":
                 rid = reply_info["post_id"] if reply_info else None
                 post_id = post_threads.post(p["text"], reply_to_id=rid, wait_sec=args.threads_wait,
@@ -257,10 +311,19 @@ def main(argv=None):
             continue
         except c.PostError as e:
             print("エラー: {} の投稿に失敗: {}".format(pid, c.redact(e)), file=sys.stderr)
+            if done.get(pid, {}).get("status") == "sending":
+                if getattr(e, "maybe_posted", False):
+                    done[pid]["status"] = "unknown"
+                    print("  - {}: 投稿されたか分かりません。二重投稿を防ぐため、自動では出し直しません"
+                          "（SNSで確認してください）".format(pid), file=sys.stderr)
+                else:
+                    del done[pid]  # 確実に出ていない → 次の実行で出し直す
+                save_state(spath, state)
             if sns not in creds:
                 unavailable[sns] = True  # ログイン失敗。同じSNSは今回あきらめる
             exit_code = 1
             continue
+        rec["status"] = "posted"
         rec["posted_at"] = datetime.datetime.now(tz).isoformat(timespec="seconds")
         done[pid] = rec
         save_state(spath, state)

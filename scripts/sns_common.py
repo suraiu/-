@@ -6,6 +6,7 @@
 - 環境変数が無いときは MissingEnvError を出して止まる。
 """
 
+import http.client
 import json
 import os
 import sys
@@ -26,7 +27,18 @@ class MissingEnvError(Exception):
 
 
 class PostError(Exception):
-    """API呼び出しに失敗した（メッセージは redact 済み）。"""
+    """API呼び出しに失敗した（メッセージは redact 済み）。
+
+    maybe_sent: リクエストは相手に届いたかもしれない（タイムアウト・接続切れ・5xx）。
+                投稿の最後の段階でこれが True のときは「投稿されたか不明」として扱い、
+                自動で出し直さない（二重投稿を防ぐため）。
+    maybe_posted: 投稿スクリプトが「投稿されたかもしれない」と判断したとき True。
+    """
+
+    def __init__(self, msg, maybe_sent=False):
+        super().__init__(msg)
+        self.maybe_sent = maybe_sent
+        self.maybe_posted = False
 
 
 def register_secret(value):
@@ -88,11 +100,18 @@ def http_request(method, url, *, form=None, json_body=None, headers=None):
             body = e.read().decode("utf-8", errors="replace")
         except Exception:
             body = ""
-        raise PostError(redact("HTTP {} {}: {}".format(e.code, _safe_url(url), body[:500])))
+        raise PostError(redact("HTTP {} {}: {}".format(e.code, _safe_url(url), body[:500])),
+                        maybe_sent=e.code >= 500)
     except urllib.error.URLError as e:
-        raise PostError(redact("接続できませんでした {}: {}".format(_safe_url(url), e.reason)))
+        # 接続前の失敗（名前解決・接続拒否）もここに来るが、区別できないので「届いたかも」とみなす
+        raise PostError(redact("接続できませんでした {}: {}".format(_safe_url(url), e.reason)),
+                        maybe_sent=True)
     except TimeoutError:
-        raise PostError("タイムアウトしました: {}".format(_safe_url(url)))
+        raise PostError("タイムアウトしました: {}".format(_safe_url(url)), maybe_sent=True)
+    except (http.client.HTTPException, OSError) as e:
+        # 接続切れ（RemoteDisconnected・ConnectionResetError など）。素の例外で落ちないようにする
+        raise PostError(redact("通信が途中で切れました {}: {}".format(_safe_url(url), type(e).__name__)),
+                        maybe_sent=True)
 
 
 def _parse_json(body):

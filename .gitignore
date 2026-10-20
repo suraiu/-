@@ -1,2 +1,3 @@
 output/**/*.mp4
 __pycache__/
+output/**/queue.lock

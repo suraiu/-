@@ -98,13 +98,19 @@ def post(text, *, session=None, reply=None):
     record = {"$type": "app.bsky.feed.post", "text": text, "createdAt": now_iso(), "langs": ["ja"]}
     if reply:
         record["reply"] = reply
-    _, res = c.http_request(
-        "POST", PDS + "/xrpc/com.atproto.repo.createRecord",
-        json_body={"repo": session.did, "collection": "app.bsky.feed.post", "record": record},
-        headers=session.auth_header(),
-    )
+    try:
+        _, res = c.http_request(
+            "POST", PDS + "/xrpc/com.atproto.repo.createRecord",
+            json_body={"repo": session.did, "collection": "app.bsky.feed.post", "record": record},
+            headers=session.auth_header(),
+        )
+    except c.PostError as e:
+        e.maybe_posted = e.maybe_sent  # 届いたか不明なら、出し直さない
+        raise
     if not res.get("uri"):
-        raise c.PostError(c.redact("投稿に失敗しました: {}".format(res)))
+        err = c.PostError(c.redact("投稿に失敗しました（uri が返ってこない）: {}".format(res)))
+        err.maybe_posted = True
+        raise err
     return {"uri": res["uri"], "cid": res.get("cid", "")}
 
 
