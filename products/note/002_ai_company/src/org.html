@@ -1,0 +1,48 @@
+<!doctype html>
+<!-- 組織図（1280×720）。書き出し: scripts/render.sh src/org.html images/org.png 1280 720 -->
+<html lang="ja"><head><meta charset="utf-8"><title>組織図</title>
+<style>
+  :root{--bg:#0F172A;--fg:#F8FAFC;--accent:#FACC15;--sub:#38BDF8;--card:#1E293B;--line:#475569}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden;background:var(--bg);font-family:"IPAPGothic","IPAGothic",sans-serif;color:var(--fg)}
+  .wrap{position:relative;width:1280px;height:720px;padding:34px 50px}
+  h1{font-size:40px}
+  h1 small{font-size:24px;color:#94A3B8;margin-left:16px;font-weight:normal}
+  .boss{position:absolute;left:440px;top:110px;width:400px;height:96px;background:var(--accent);color:var(--bg);border-radius:16px;text-align:center;padding-top:12px}
+  .boss b{font-size:34px;display:block}
+  .boss span{font-size:22px;font-family:"IPAGothic",monospace}
+  .bus{position:absolute;left:640px;top:206px;width:4px;height:44px;background:var(--line)}
+  .hbus{position:absolute;left:150px;top:250px;width:980px;height:4px;background:var(--line)}
+  .row{position:absolute;left:50px;width:1180px;display:flex;gap:16px;justify-content:center}
+  .r1{top:280px}.r2{top:470px}
+  .c{width:216px;height:166px;background:var(--card);border:3px solid var(--sub);border-radius:14px;padding:12px 14px;position:relative}
+  .c.add{border-color:#F472B6}
+  .c .n{font-size:20px;color:var(--sub);font-weight:bold}
+  .c.add .n{color:#F472B6}
+  .c b{display:block;font-size:28px;margin:4px 0 6px}
+  .c p{font-size:19px;line-height:1.4;color:#CBD5E1}
+  .c code{position:absolute;left:14px;bottom:10px;font-family:"IPAGothic",monospace;font-size:17px;color:#94A3B8}
+  .legend{position:absolute;right:50px;top:44px;font-size:20px;color:#CBD5E1}
+  .legend i{display:inline-block;width:18px;height:18px;border:3px solid var(--sub);border-radius:4px;vertical-align:-2px;margin:0 6px 0 16px}
+  .legend i.p{border-color:#F472B6}
+  .foot{position:absolute;left:50px;bottom:14px;font-size:18px;color:#94A3B8}
+</style></head><body><div class="wrap">
+  <h1>スライム王国の組織図<small>AI社員10人＝設定ファイル10個</small></h1>
+  <div class="legend"><i></i>最初からの役職<i class="p"></i>増員として書かれた役職</div>
+  <div class="boss"><b>① 統括AI（社長）</b><span>CLAUDE.md（メインのClaude）</span></div>
+  <div class="bus"></div><div class="hbus"></div>
+  <div class="row r1">
+    <div class="c"><div class="n">②</div><b>リサーチAI</b><p>ネタ集め・出典URL</p><code>researcher.md</code></div>
+    <div class="c"><div class="n">③</div><b>戦略AI</b><p>ネタ選び・投稿時刻</p><code>strategist.md</code></div>
+    <div class="c"><div class="n">④</div><b>ライターAI</b><p>投稿文・note・紹介文</p><code>writer.md</code></div>
+    <div class="c"><div class="n">⑤</div><b>デザインAI</b><p>画像をHTMLで作る</p><code>designer.md</code></div>
+    <div class="c"><div class="n">⑥</div><b>品質管理AI</b><p>疑わしいものは<br>通さない</p><code>quality-checker.md</code></div>
+  </div>
+  <div class="row r2">
+    <div class="c"><div class="n">⑦</div><b>投稿・分析AI</b><p>投稿キュー・実績</p><code>publisher-analyst.md</code></div>
+    <div class="c add"><div class="n">⑧ 増員</div><b>動画AI</b><p>リール台本・スライド</p><code>video-producer.md</code></div>
+    <div class="c add"><div class="n">⑨ 増員</div><b>収益化AI</b><p>有料記事・商品の案</p><code>monetization.md</code></div>
+    <div class="c add"><div class="n">⑩ 増員</div><b>コミュニティAI</b><p>返信の案・読者の声</p><code>community.md</code></div>
+  </div>
+  <div class="foot">②〜⑩は .claude/agents/ の中のファイル。10人とも、最初の記録（10月20日 16時23分）で同時に作られた。</div>
+</div></body></html>

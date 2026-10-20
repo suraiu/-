@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- GIF「作業記録（git log）がたまっていく様子」の1コマ（800×500）。?n=1〜10 で何行目まで見せるかを切り替える。
+     書き出し: scripts/render.sh 'src/timeline_gif.html?n=1' frames/t01.png 800 500 → ffmpeg でGIFにする（post_guide.md 参照） -->
+<html lang="ja"><head><meta charset="utf-8"><title>記録GIF</title>
+<style>
+  :root{--bg:#0F172A;--fg:#F8FAFC;--accent:#FACC15;--sub:#38BDF8;--ng:#F87171}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:800px;height:500px;overflow:hidden;background:var(--bg);font-family:"IPAPGothic","IPAGothic",sans-serif;color:var(--fg)}
+  .wrap{position:relative;width:800px;height:500px;padding:24px 34px}
+  h1{font-size:28px}
+  h1 small{font-size:18px;color:#94A3B8;margin-left:10px;font-weight:normal}
+  ul{list-style:none;margin-top:14px}
+  li{display:flex;gap:16px;font-size:21px;line-height:1;padding:8px 10px;border-radius:8px;color:#CBD5E1}
+  li .t{width:92px;flex:none;font-family:"IPAGothic",monospace;color:var(--sub)}
+  li.new{background:#1E293B;color:var(--fg);font-weight:bold}
+  li.new .t{color:var(--accent)}
+  li.stop .m{color:var(--ng)}
+  li.off{visibility:hidden}
+  .chara{position:absolute;right:20px;bottom:14px;width:110px}
+</style></head><body><div class="wrap">
+  <h1>会社の1日目の作業記録<small>git log の時刻を日本時間にしたもの</small></h1>
+  <ul id="list"></ul>
+  <img class="chara" id="chara" src="assets/puruno_normal.png" alt="">
+</div>
+<script>
+  const n = +(new URLSearchParams(location.search).get('n') || 1);
+  const L = [
+    ['16:23', '設計図（CLAUDE.md）と役職9人の設定ファイル', 'normal'],
+    ['16:39', '会社名を「スライム国」に・第1回会議の議題', 'idea'],
+    ['16:50', '第1回会議の決定（議題から約10分）', 'ok'],
+    ['17:08', '第2回会議の決定（議題から約9分半）', 'ok'],
+    ['19:19', '利用上限で中断（作業途中を保存）', 'caution'],
+    ['19:30', 'Kindle本3冊の原稿がそろう', 'cheer'],
+    ['19:35', '投稿スクリプト・30日分の下書き・手順書', 'idea'],
+    ['20:58', '社内レビュー完了（note・投稿・手順書）', 'ok'],
+    ['21:09', 'Kindle本の各章に「ぷるの」を追加', 'cheer'],
+    ['翌7:44', '会社名を「スライム王国」に変更', 'cheer'],
+  ];
+  const ul = document.getElementById('list');
+  L.forEach(([t, m], i) => {
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="t">' + t + '</span><span class="m">' + m + '</span>';
+    if (i >= n) li.classList.add('off');
+    if (i === n - 1) li.classList.add('new');
+    if (i === 4) li.classList.add('stop');
+    ul.appendChild(li);
+  });
+  document.getElementById('chara').src = 'assets/puruno_' + L[n - 1][2] + '.png';
+</script>
+</body></html>

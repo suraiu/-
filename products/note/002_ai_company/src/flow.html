@@ -1,0 +1,46 @@
+<!doctype html>
+<!-- 1日の仕事の流れ（1280×720）。書き出し: scripts/render.sh src/flow.html images/flow.png 1280 720 -->
+<html lang="ja"><head><meta charset="utf-8"><title>1日の仕事の流れ</title>
+<style>
+  :root{--bg:#0F172A;--fg:#F8FAFC;--accent:#FACC15;--sub:#38BDF8;--card:#1E293B;--line:#64748B;--ng:#F87171}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden;background:var(--bg);font-family:"IPAPGothic","IPAGothic",sans-serif;color:var(--fg)}
+  .wrap{position:relative;width:1280px;height:720px;padding:34px 50px}
+  h1{font-size:40px}
+  h1 small{font-size:24px;color:#94A3B8;margin-left:16px;font-weight:normal}
+  .trig{position:absolute;left:50px;top:104px;font-size:24px;background:var(--accent);color:var(--bg);font-weight:bold;padding:8px 18px;border-radius:999px}
+  .s{position:absolute;width:250px;height:150px;background:var(--card);border:3px solid var(--sub);border-radius:14px;padding:12px 16px}
+  .s .k{font-size:20px;color:var(--sub);font-weight:bold}
+  .s b{display:block;font-size:28px;margin:4px 0 6px}
+  .s p{font-size:19px;line-height:1.4;color:#CBD5E1}
+  .s.qc{border-color:var(--accent)} .s.qc .k{color:var(--accent)}
+  .arr{position:absolute;font-size:44px;color:var(--line);line-height:1}
+  .back{position:absolute;left:300px;top:336px;width:740px;font-size:21px;color:var(--ng);font-weight:bold;text-align:center;line-height:1.35}
+  .back:before{content:"";position:absolute;left:-6px;right:-6px;top:-12px;height:2px;border-top:3px dashed var(--ng)}
+  .warn{position:absolute;left:50px;bottom:22px;width:1180px;font-size:21px;line-height:1.5;color:#E2E8F0;border:2px dashed #475569;border-radius:12px;padding:10px 18px}
+  .warn b{color:var(--accent)}
+</style></head><body><div class="wrap">
+  <h1>1日の仕事の流れ<small>CLAUDE.md の「日次フロー」をそのまま図にしたもの</small></h1>
+  <div class="trig">合図：「日次運営を実行」と話しかける</div>
+
+  <div class="s" style="left:50px;top:165px"><div class="k">1 ① 統括AI</div><b>状況確認</b><p>戦略・投稿履歴・<br>実績・ネタ帳を読む</p></div>
+  <div class="arr" style="left:310px;top:215px">→</div>
+  <div class="s" style="left:355px;top:165px"><div class="k">2 ② リサーチAI</div><b>ネタ集め</b><p>5件以上、<br>出典URL付き</p></div>
+  <div class="arr" style="left:615px;top:215px">→</div>
+  <div class="s" style="left:660px;top:165px"><div class="k">3 ③ 戦略AI</div><b>企画を選ぶ</b><p>今日の1ネタと<br>投稿時刻を決める</p></div>
+  <div class="arr" style="left:920px;top:215px">→</div>
+  <div class="s" style="left:965px;top:165px"><div class="k">4 ④⑤⑧ 同時に</div><b>制作</b><p>文章・画像・<br>リール（週3本）</p></div>
+
+  <div class="arr" style="left:1075px;top:322px">↓</div>
+
+  <div class="s qc" style="left:965px;top:385px"><div class="k">5 ⑥ 品質管理AI</div><b>全部を検査</b><p>NGは担当に戻す<br>（最大2回まで）</p></div>
+  <div class="back">⑥でNG → 担当に差し戻し（2回直してもNGなら、今日の投稿から外す）</div>
+  <div class="arr" style="left:915px;top:435px">←</div>
+  <div class="s" style="left:660px;top:385px"><div class="k">6 ⑦ 投稿・分析AI</div><b>投稿キュー</b><p>AUTO_POST が false の<br>間は人がコピペ</p></div>
+  <div class="arr" style="left:610px;top:435px">←</div>
+  <div class="s" style="left:355px;top:385px"><div class="k">7 月曜だけ ⑦⑨⑩</div><b>週次の見直し</b><p>実績・収益・<br>読者の反応をまとめる</p></div>
+  <div class="arr" style="left:305px;top:435px">←</div>
+  <div class="s" style="left:50px;top:385px"><div class="k">8 ① 統括AI</div><b>日報</b><p>成果物・検査結果・<br>人に確認すること</p></div>
+
+  <div class="warn"><b>正直な注記：</b>この流れは、まだ一度も通しで動かしていない（output/ フォルダは空、投稿の記録は0件）。<br>しかも人が話しかけないと始まらない作り。品質管理AIからも「自動運転ではない」と指摘されている。</div>
+</div></body></html>

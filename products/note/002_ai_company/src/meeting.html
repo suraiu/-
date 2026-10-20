@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- 会議で案が差し戻される流れ（1280×720）。書き出し: scripts/render.sh src/meeting.html images/meeting.png 1280 720 -->
+<html lang="ja"><head><meta charset="utf-8"><title>会議の差し戻し</title>
+<style>
+  :root{--bg:#0F172A;--fg:#F8FAFC;--accent:#FACC15;--sub:#38BDF8;--card:#1E293B;--line:#64748B;--ng:#F87171}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden;background:var(--bg);font-family:"IPAPGothic","IPAGothic",sans-serif;color:var(--fg)}
+  .wrap{position:relative;width:1280px;height:720px;padding:34px 50px}
+  h1{font-size:40px}
+  h1 small{font-size:24px;color:#94A3B8;margin-left:16px;font-weight:normal}
+  .col{position:absolute;top:110px;height:440px;background:var(--card);border-radius:14px;padding:16px 18px;border:3px solid var(--sub)}
+  .col .k{font-size:20px;color:var(--sub);font-weight:bold}
+  .col b{display:block;font-size:28px;margin:4px 0 10px}
+  .col p{font-size:20px;line-height:1.5;color:#CBD5E1}
+  .c1{left:50px;width:240px}
+  .c2{left:330px;width:300px}
+  .c3{left:670px;width:300px;border-color:var(--ng)} .c3 .k{color:var(--ng)}
+  .c4{left:1010px;width:220px;border-color:var(--accent)} .c4 .k{color:var(--accent)}
+  .arr{position:absolute;top:300px;font-size:40px;color:var(--line)}
+  .prop{background:#0F172A;border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:19px;line-height:1.4}
+  .prop s{color:#94A3B8}
+  .prop em{font-style:normal;color:var(--ng);font-weight:bold}
+  .stamp{display:inline-block;border:3px solid var(--ng);color:var(--ng);font-weight:bold;font-size:24px;padding:4px 12px;border-radius:8px;transform:rotate(-4deg);margin:2px 0 10px}
+  .back{position:absolute;left:250px;top:566px;width:900px;text-align:center;font-size:21px;color:var(--ng);font-weight:bold}
+  .back:before{content:"";display:block;height:0;border-top:3px dashed var(--ng);margin-bottom:6px}
+  .foot{position:absolute;left:50px;bottom:22px;width:1180px;font-size:19px;line-height:1.5;color:#94A3B8}
+</style></head><body><div class="wrap">
+  <h1>会議で案が差し戻される流れ<small>第1回経営会議（10月20日）</small></h1>
+
+  <div class="col c1"><div class="k">① 統括AI</div><b>議題を出す</b>
+    <p>11月末までに<br>利益5万円の<br>プランを1つ決める<br><br>前提：オーナーは<br>ほぼ動かない、<br>AIはログイン<br>できない</p></div>
+  <div class="arr" style="left:295px">→</div>
+
+  <div class="col c2"><div class="k">②③⑨ が別々に</div><b>案を出す</b>
+    <div class="prop">③ 12月議会パック<br>見立て 10〜15%</div>
+    <div class="prop">② AI会社の中身キット<br>見立て 7%</div>
+    <div class="prop">⑨ 知り合い限定リサーチ<br>見立て 約10%</div></div>
+  <div class="arr" style="left:635px">→</div>
+
+  <div class="col c3"><div class="k">⑥ 品質管理AI</div><b>レビュー</b>
+    <div class="stamp">3案とも通さない</div>
+    <div class="prop">③ <s>10〜15%</s> → <em>3〜5%</em></div>
+    <div class="prop">② <s>7%</s> → <em>1〜3%</em></div>
+    <div class="prop">⑨ <s>約10%</s> → <em>なしで1%以下</em></div></div>
+  <div class="arr" style="left:975px">→</div>
+
+  <div class="col c4"><div class="k">① 統括AI</div><b>決める</b>
+    <p>12月議会パックを<br>主力に。<br><br>ただし<br>「本文で確かめた<br>事例だけ載せる」<br><br>→ 確かめられた<br>事例が0件で<br>保留に</p></div>
+
+  <div class="back">第2回会議でも同じ流れ：13点／25点で「条件付き差し戻し」→ 直してから決定</div>
+  <div class="foot">％は「11月末までに利益5万円に届く確率」の、AI社員どうしの見立て（実績ではない）。議題の保存から決定の保存まで約10分。</div>
+</div></body></html>

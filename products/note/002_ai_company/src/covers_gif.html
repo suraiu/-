@@ -1,0 +1,69 @@
+<!doctype html>
+<!-- GIF「Kindle本の表紙が直されていく様子」の1コマ（800×500）。?f=1〜4 でコマを切り替える。
+     書き出し: scripts/render.sh 'src/covers_gif.html?f=1' frames/c1.png 800 500 → ffmpeg でGIFにする（post_guide.md 参照） -->
+<html lang="ja"><head><meta charset="utf-8"><title>表紙GIF</title>
+<style>
+  :root{--bg:#0F172A;--fg:#F8FAFC;--accent:#FACC15;--sub:#38BDF8}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:800px;height:500px;overflow:hidden;background:var(--bg);font-family:"IPAPGothic","IPAGothic",sans-serif;color:var(--fg)}
+  .wrap{position:relative;width:800px;height:500px}
+  .cover{position:absolute;left:40px;top:30px;width:275px;height:440px;border-radius:6px;box-shadow:0 0 0 2px #334155}
+  .txt{position:absolute;left:350px;top:46px;width:420px}
+  .step{font-size:20px;color:var(--sub);font-weight:bold}
+  .time{font-size:40px;font-weight:bold;color:var(--accent);margin:6px 0 14px}
+  .time small{font-size:22px;color:var(--fg);margin-left:8px}
+  .what{font-size:28px;font-weight:bold;line-height:1.45}
+  .why{font-size:21px;line-height:1.6;color:#CBD5E1;margin-top:16px}
+  .dots{position:absolute;left:350px;bottom:36px;display:flex;gap:10px}
+  .dots i{width:14px;height:14px;border-radius:50%;background:#334155}
+  .dots i.on{background:var(--accent)}
+  .three{position:absolute;left:30px;top:90px;display:flex;gap:18px}
+  .three img{width:200px;height:320px;border-radius:5px;box-shadow:0 0 0 2px #334155}
+  .t4{position:absolute;left:30px;top:26px;font-size:30px;font-weight:bold}
+  .t4 em{font-style:normal;color:var(--accent)}
+  .chara{position:absolute;right:16px;bottom:8px;width:120px}
+  .dots.f4{left:30px;bottom:30px}
+  .hidden{display:none}
+</style></head><body><div class="wrap">
+  <div id="single">
+    <img class="cover" id="img" src="assets/cover_v1_1929.png" alt="">
+    <div class="txt">
+      <div class="step" id="step"></div>
+      <div class="time" id="time"></div>
+      <div class="what" id="what"></div>
+      <div class="why" id="why"></div>
+    </div>
+  </div>
+  <div id="all" class="hidden">
+    <div class="t4">今の3冊（<em>シリーズで同じ形</em>にそろった）</div>
+    <div class="three">
+      <img src="assets/cover_v3_0744.png" alt=""><img src="assets/cover_vol2_now.png" alt=""><img src="assets/cover_vol3_now.png" alt="">
+    </div>
+  </div>
+  <div class="dots"><i></i><i></i><i></i><i></i></div>
+  <img class="chara" id="chara" src="assets/puruno_normal.png" alt="">
+</div>
+<script>
+  const f = +(new URLSearchParams(location.search).get('f') || 1);
+  const F = {
+    1: ['1回目', '19:29', '第1巻が完成', '最初の表紙。中身の特長（テンプレの数・出力例・直し方）を、下に3つの箱で並べていた。', 'cover_v1_1929.png', 'normal'],
+    2: ['2回目', '19:31', '第2巻・第3巻の形にそろえる', '続けて完成した第2巻・第3巻と見た目がちがったので、「第1巻」の札と大きな題名の形に作り直した。', 'cover_v2_1931.png', 'idea'],
+    3: ['3回目', '翌朝 7:44', '会社名を「スライム王国」に', '表紙のいちばん下の会社名が「スライム国」から「スライム王国」に。表紙・登録情報・本文をまとめて直した。', 'cover_v3_0744.png', 'ok'],
+  };
+  document.querySelectorAll('.dots i')[f - 1].classList.add('on');
+  if (f === 4) {
+    document.getElementById('single').classList.add('hidden');
+    document.getElementById('all').classList.remove('hidden');
+    document.querySelector(".dots").classList.add("f4");
+    document.getElementById('chara').src = 'assets/puruno_cheer.png';
+  } else {
+    const [s, t, w, y, img, pose] = F[f];
+    document.getElementById('step').textContent = 'Kindle第1巻の表紙　' + s;
+    document.getElementById('time').innerHTML = t + '<small>（日本時間）</small>';
+    document.getElementById('what').textContent = w;
+    document.getElementById('why').textContent = y;
+    document.getElementById('img').src = 'assets/' + img;
+    document.getElementById('chara').src = 'assets/puruno_' + pose + '.png';
+  }
+</script>
+</body></html>

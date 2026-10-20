@@ -144,7 +144,7 @@ def build(folder: Path) -> Path:
         title=html.escape(title),
         title_attr=html.escape(title, quote=True),
         summary=summary,
-        price=f"価格：{price}円" if price else "価格：未設定",
+        price=("価格：無料" if price == 0 else f"価格：{price}円") if price is not None else "価格：未設定",
         tags_html=(f'<button class="copy plain" data-plain="{html.escape(tags, quote=True)}">ハッシュタグをコピー</button>'
                    f'<p class="tags">{html.escape(tags)}</p>') if tags else "",
         cards="\n".join(cards),

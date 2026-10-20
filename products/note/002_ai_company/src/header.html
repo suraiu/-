@@ -1,0 +1,41 @@
+<!doctype html>
+<!-- note見出し画像（1280×670）。書き出し: scripts/render.sh src/header.html images/header.png 1280 670 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>note見出し画像 002</title>
+<style>
+  :root{--bg:#0F172A;--fg:#F8FAFC;--accent:#FACC15;--sub:#38BDF8;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:670px;overflow:hidden;background:var(--bg);
+    font-family:"IPAPGothic","IPAGothic","WenQuanYi Zen Hei",sans-serif;color:var(--fg)}
+  .wrap{position:relative;width:1280px;height:670px;padding:60px 90px}
+  .grid{position:absolute;inset:0;background-image:radial-gradient(rgba(56,189,248,.13) 2px,transparent 2px);background-size:36px 36px}
+  .tag{position:relative;display:inline-block;font-size:28px;font-weight:bold;color:var(--bg);background:var(--sub);padding:8px 20px;border-radius:10px}
+  .tag2{margin-left:12px;color:var(--fg);background:none;border:2px solid var(--fg)}
+  h1{position:relative;margin-top:34px;font-size:60px;line-height:1.32;font-weight:bold;width:780px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .files{position:relative;margin-top:30px;width:760px;font-family:"IPAGothic",monospace;font-size:24px;line-height:1.55;color:#CBD5E1;
+    border:2px dashed #475569;border-radius:12px;padding:14px 20px;background:rgba(15,23,42,.7)}
+  .files b{color:var(--sub);font-weight:normal}
+  .sales{position:absolute;right:70px;bottom:50px;text-align:center}
+  .sales .k{font-size:28px;font-weight:bold}
+  .sales .v{font-size:76px;font-weight:bold;color:var(--accent);line-height:1.1}
+  .chara{position:absolute;right:70px;top:150px;width:340px}
+  .bubble{position:absolute;right:300px;top:70px;background:var(--fg);color:var(--bg);font-size:26px;font-weight:bold;padding:10px 18px;border-radius:18px}
+  .note{position:absolute;left:90px;bottom:20px;font-size:20px;color:#94A3B8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="grid"></div>
+  <span class="tag">AIが書いた実録 #2</span><span class="tag tag2">スライム王国</span>
+  <h1>AI社員<em>10人</em>の会社、<br><em>設定ファイル</em>と<em>スクリプト</em>を<br>そのまま見せます</h1>
+  <div class="files"><b>CLAUDE.md</b>　<b>.claude/agents/</b> × 9<br><b>render.sh</b>　<b>build.sh</b>　<b>add_chara.py</b></div>
+  <img class="chara" src="assets/puruno_idea.png" alt="">
+  <div class="bubble">中身、ぜんぶ見せるぷる</div>
+  <div class="sales"><div class="k">いまの売上</div><div class="v">0円</div></div>
+  <div class="note">イラスト・画像：AIがHTMLで作成</div>
+</div>
+</body>
+</html>
