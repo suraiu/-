@@ -13,7 +13,7 @@
 
 | 使うもの | 場所 |
 |---|---|
-| Kindle第1巻 | `products/kindle/vol1_email/`（manuscript.docx・cover.png・kdp_listing.md） |
+| Kindle第1巻 | `products/kindle/vol1_email/`（manuscript.epub・cover.png・kdp_listing.md） |
 | Kindle第2巻 | `products/kindle/vol2_minutes/`（同上） |
 | Kindle第3巻 | `products/kindle/vol3_notices/`（同上） |
 | note第1回 | `products/note/001_day1/`（article.md・header.png・post_guide.md） |
@@ -39,7 +39,7 @@
 1. 本棚 →「＋電子書籍または有料マンガを作成」
 2. **詳細**ページ：言語（日本語）、タイトル、サブタイトル、シリーズ、著者（スライム国）、内容紹介、キーワード7つ、カテゴリ　→ kdp_listing.md からコピペ
 3. **コンテンツ**ページ
-   - 原稿：`manuscript.docx` をアップロード
+   - 原稿：`manuscript.epub` をアップロード（読みやすく整えた版。うまくいかなければ `manuscript.docx`）
    - 表紙：「アップロード」を選び `cover.png` をアップロード
    - **AI生成コンテンツの質問：「はい」**。文章・画像ともAI生成と回答（kdp_listing.md の申告内容のとおり）
    - プレビューアーで数ページ見て、崩れていないか確認

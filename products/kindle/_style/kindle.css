@@ -1,0 +1,17 @@
+/* スライム国 Kindle本の共通スタイル（読みやすさ重視） */
+body { line-height: 1.9; }
+p { margin: 0 0 1.1em 0; text-indent: 0; }
+h1 { font-size: 1.5em; margin: 2.5em 0 1em; padding-bottom: .3em; border-bottom: 2px solid #38BDF8; page-break-before: always; }
+h2 { font-size: 1.25em; margin: 2.2em 0 .8em; padding-left: .5em; border-left: 6px solid #38BDF8; }
+h3 { font-size: 1.1em; margin: 1.8em 0 .6em; }
+ul, ol { margin: .3em 0 1.2em 1.4em; padding: 0; }
+li { margin: 0 0 .5em 0; line-height: 1.8; }
+ul li { list-style-type: disc; }
+blockquote { margin: 1em 0 1.4em; padding: .8em 1em; border: 1px solid #94A3B8; border-radius: 6px; background: #F1F5F9; }
+blockquote p { margin: 0 0 .6em 0; }
+pre, code { font-family: monospace; white-space: pre-wrap; }
+pre { margin: 1em 0 1.4em; padding: .8em 1em; border: 1px dashed #64748B; line-height: 1.7; }
+strong { font-weight: bold; }
+hr { border: none; border-top: 1px dashed #94A3B8; margin: 2em 0; }
+table { border-collapse: collapse; margin: 1em 0 1.4em; }
+td, th { border: 1px solid #94A3B8; padding: .3em .5em; }
